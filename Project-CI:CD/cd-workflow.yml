@@ -1,0 +1,46 @@
+name: 'cd-workflow'
+
+env:
+  SERVICE: [AppName]
+  CONFIGURATION: Release
+
+on:
+  push:
+    tags:
+      - release-v*
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  archiving:
+    env:
+      ARCHIVE_PATH: ./archiving/testflight.xcarchive
+      OPTIONSPLIST_PATH: exportOptions-TestFlight.plist
+      IPA_PATH: ./archiving/export
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install pods
+        run: pod install --repo-update
+      - name: Clean build environment
+        run: xcodebuild clean
+      - name: Archiving
+        env:
+          XCWORKSPACE: ${{ env.SERVICE }}.xcworkspace
+          SCHEME: ${{ env.SERVICE }}
+        run: xcodebuild archive
+             -workspace "$XCWORKSPACE"
+             -scheme "$SCHEME"
+             -configuration "$CONFIGURATION"
+             -archivePath "$ARCHIVE_PATH"
+      - name: Export .ipa file and Upload to Testflight
+        run: xcodebuild
+             -exportArchive
+             -allowProvisioningUpdates
+             -archivePath "$ARCHIVE_PATH"
+             -exportOptionsPlist "$OPTIONSPLIST_PATH"
+             -exportPath "$IPA_PATH"
+      - name: Clear
+        run: rm -r ./archiving

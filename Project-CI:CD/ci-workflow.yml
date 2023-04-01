@@ -1,0 +1,33 @@
+name: 'ci-workflow'
+
+env:
+  SERVICE: [AppName]
+  CONFIGURATION: Debug
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    needs: [ swiftLint ]
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install pods
+        run: pod install --repo-update
+      - name: Build
+        env:
+          XCWORKSPACE: ${{ env.SERVICE }}.xcworkspace
+          SCHEME: ${{ env.SERVICE }}
+          DESTINATION: platform=iOS Simulator,name=[시뮬레이터 이름, ex) iPhone 14 Pro],OS=latest
+        run: xcodebuild clean build
+             -workspace "$XCWORKSPACE"
+             -scheme "$SCHEME"
+             -configuration "$CONFIGURATION"
+             -destination "$DESTINATION"
+
