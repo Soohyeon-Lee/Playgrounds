@@ -1,8 +1,8 @@
 # AttributedString with Emoji (String과 NSString, 그리고 UnicodeScalar와 UTF16)
 
-문자열에 다양한 textAttributes를 적용하는 과정에서 이모지가 포함된 문자열이 꺠지는 현상이 발생했다.
+문자열에 다양한 textAttributes를 적용하는 과정에서 이모지가 포함된 문자열이 깨지는 현상이 발생했다.
 
-왜 잘 돌아가던 코드가 이모지만 포함되면 깨지는걸까?
+왜 잘 돌아가던 코드가 이모지만 포함되면 깨지는 걸까?
 
 ## 문제 발생
 
@@ -30,9 +30,9 @@ textLabel.attributedText = attributedString // Label에 나타난 모습 = 🐿�
 ```
 ## 해결
 
-관련 글을 검색해보니 NSRange를 설정할 때, String 기반 count를 쓰면 안된다고 한다?
+관련 글을 검색해 보니 NSRange를 설정할 때, String 기반 count를 쓰면 안 된다고 한다?
 NSString의 length를 사용하거나 String을 utf16으로 변환 후 count를 호출하라고 한다.
-일단 시키는대로 해보니 정상적으로 이모지가 출력되는 것을 확인했다.
+일단 시키는 대로 해보니 정상적으로 이모지가 출력되는 것을 확인했다.
 ```swift
 var text = "입력 값"
 var attributedString = NSMutableAttributedString(string: text)
@@ -48,9 +48,9 @@ textLabel.attributedText = attributedString // Label에 나타난 모습 = 🐿�
 
 ## 분석
 
-이모지가 없는 텍스트에서는 문제 없던 코드가 왜 작동하지 않았을까?
+이모지가 없는 텍스트에서는 문제없던 코드가 왜 작동하지 않았을까?
 
-문자열만으로 구성된 String의 길이를 출력해보았다.
+문자열만으로 구성된 String의 길이를 출력해 보았다.
 ```swift
 let text = "Hello"
 
@@ -73,11 +73,11 @@ print(text.count) // 6
 print((text as NSString).length) // 16
 print(text.utf16.count) // 16
 ```
-도대체 1은 어디서 온걸까? 그리고 이모지만 바꿨는데 왜 숫자가 또 다르지?
+도대체 1은 어디서 온 걸까? 그리고 이모지만 바꿨는데 왜 숫자가 또 다르지?
 
 ### String과 NSString
 
-String과 NSString은 문자열 데이터가 어떻게 구성되어있을까?
+String과 NSString은 문자열 데이터가 어떻게 구성되어 있을까?
 
 String은 Character의 집합(BidirectionalCollection)으로 count를 호출하면 Character들을 하나씩 순회하며 카운트를 한 후 count 값을 반환한다.
 
@@ -89,8 +89,7 @@ String은 Character의 집합(BidirectionalCollection)으로 count를 호출하�
 >
 > Reference. [Apple Document: String](https://developer.apple.com/documentation/swift/string/#Accessing-a-Strings-Unicode-Representation)
 
-
-어떠한 이모지가 문자열에 존재하더라도 하나의 Character로 읽어들이기 때문에 이모지의 count는 1이 된다.
+UnicodeScalar가 아니라 하나의 Character로 읽어들이기 때문에 어떠한 이모지가 문자열에 존재하더라도 이모지의 count는 1이 된다.
 
 ```swift
 let text1 = "🐿"
@@ -131,8 +130,8 @@ print(text2.utf16.count) // 11
 
 ## 결론
 
-단순히 String과 NSString이 상호호환이 되기 때문에 비슷한 데이터 처리를 할 것이라는 생각을 하고 코드를 짰었고, 이 부분이 문제의 원인이 되었다.
+단순히 String과 NSString이 상호 호환이 되기 때문에 비슷한 데이터 처리를 할 것이라는 생각을 하고 코드를 짰었고, 이 부분이 문제의 원인이 되었다.
 
-글을 적으며 나름대로 정리하였지만 이 모든 내용은 [Apple Document: String](https://developer.apple.com/documentation/swift/string/#Accessing-a-Strings-Unicode-Representation)의 `Accessing a String’s Unicode Representation` 섹션에 친절한 예시와 함께 잘 설명되어있다. (...)
+글을 적으며 나름대로 정리하였지만 이 모든 내용은 [Apple Document: String](https://developer.apple.com/documentation/swift/string/#Accessing-a-Strings-Unicode-Representation)의 `Accessing a String’s Unicode Representation` 섹션에 친절한 예시와 함께 잘 설명되어 있다. (...)
 
 왜 String은 Random Access가 안되냐고 불평할 시간에 공식 문서와 함께 내부 구조를 차분히 공부해서 활용하는 개발자가 되어야겠다.
