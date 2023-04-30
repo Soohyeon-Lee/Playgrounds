@@ -7,6 +7,10 @@
 - [CI/CD](https://github.com/Soohyeon-Lee/Playgrounds/tree/main/Sample%20Projects/Project-CI:CD)
   - Build, Testflight, Github Action
 
+### Pattern
+- [Repository Pattern](https://github.com/Soohyeon-Lee/Playgrounds/tree/main/Sample%20Projects/Pattern-Repository)
+  - Protocol, NSCache, FileManager, URLSession
+
 ### Permission
 - [PhotoLibrary](https://github.com/Soohyeon-Lee/Playgrounds/tree/main/Sample%20Projects/Permission-PhotoLibrary)
   - Photos, Permission
@@ -18,3 +22,6 @@
   - CollectionView, DataSource, Snapshot
   - [Apple Document: UICollectionViewDiffableDataSource](https://developer.apple.com/documentation/uikit/uicollectionviewdiffabledatasource)
   - [Apple Sample Code: Implementing Modern Collection Views](https://developer.apple.com/documentation/uikit/views_and_controls/collection_views/implementing_modern_collection_views)
+- [UIFontPickerViewController](https://github.com/Soohyeon-Lee/Playgrounds/tree/main/Sample%20Projects/iOS13-UIFontPickerViewController)
+  - UIFont
+  - [Apple Document: UIFontPickerViewController](https://developer.apple.com/documentation/uikit/uifontpickerviewcontroller)
